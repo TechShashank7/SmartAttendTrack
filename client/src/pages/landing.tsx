@@ -1,6 +1,34 @@
-import { Link } from "wouter";
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { useAuth } from "@/lib/auth";
+import { getUserRole } from "@/config/authorizedEmails";
 
 export default function LandingPage() {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [, setLocation] = useLocation();
+  const { login } = useAuth();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    const success = login(email);
+
+    if (success) {
+      const role = getUserRole(email.trim());
+      if (role === 'teacher') {
+        setLocation('/teacher');
+      } else if (role === 'student') {
+        setLocation('/student');
+      }
+    } else {
+      setError("Unauthorized email address. Please use your institutional email.");
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-landing"></div>
@@ -44,20 +72,51 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Login Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
-          <Link href="/teacher">
-            <button className="btn btn-primary text-base sm:text-lg lg:text-xl px-8 sm:px-12 py-4 sm:py-5 shadow-2xl w-full sm:w-auto" data-testid="button-teacher-login">
-              <i className="fas fa-chalkboard-teacher"></i>
-              Teacher Login
+        {/* Login Form */}
+        <div className="max-w-md mx-auto">
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i className="fas fa-envelope text-gray-400 text-lg"></i>
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your institutional email"
+                className="w-full pl-12 pr-4 py-4 text-base sm:text-lg rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all shadow-lg"
+                required
+                data-testid="input-email"
+              />
+            </div>
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm" data-testid="text-error">
+                <i className="fas fa-exclamation-circle mr-2"></i>
+                {error}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full btn btn-primary text-base sm:text-lg lg:text-xl px-8 py-4 sm:py-5 shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+              data-testid="button-login"
+            >
+              {isLoading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Logging in...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-sign-in-alt mr-2"></i>
+                  Login
+                </>
+              )}
             </button>
-          </Link>
-          <Link href="/student">
-            <button className="btn bg-gradient-success text-white text-base sm:text-lg lg:text-xl px-8 sm:px-12 py-4 sm:py-5 shadow-2xl w-full sm:w-auto" data-testid="button-student-login">
-              <i className="fas fa-user-graduate"></i>
-              Student Login
-            </button>
-          </Link>
+          </form>
+          <p className="mt-4 text-sm text-white/70 text-center" data-testid="text-login-hint">
+            Use your @kiet.edu email address to access your dashboard
+          </p>
         </div>
 
         {/* Additional info */}
