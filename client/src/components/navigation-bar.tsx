@@ -16,10 +16,6 @@ export default function NavigationBar({ title, backTo = "/" }: NavigationBarProp
           <h2 className="text-lg md:text-2xl font-semibold text-white" data-testid="text-page-title">{title}</h2>
         </div>
         <div className="flex items-center space-x-2 md:space-x-4">
-          <div className="search-container hidden sm:block">
-            <input type="text" className="search-input" placeholder="Search..." />
-            <span className="search-icon">🔍</span>
-          </div>
           <Link href={backTo}>
             <button className="btn bg-white text-gray-800 hover:shadow-lg text-sm md:text-base px-3 md:px-4 py-2 md:py-3" data-testid="button-back-home">
               <i className="fas fa-arrow-left"></i>
