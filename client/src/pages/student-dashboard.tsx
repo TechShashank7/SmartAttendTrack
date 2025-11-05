@@ -114,14 +114,14 @@ export default function StudentDashboard() {
     <>
       {/* Welcome Header */}
       <div className="welcome-header">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-light mb-2">Good morning, Shashank</h1>
-            <p className="text-white/80 text-lg">You have 3 classes today • Computer Science Engineering(AI) • ID: 2428CSEAI1767</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light mb-2">Good morning, Shashank</h1>
+            <p className="text-white/80 text-sm sm:text-base lg:text-lg">You have 3 classes today • Computer Science Engineering(AI) • ID: 2428CSEAI1767</p>
           </div>
-          <div className="text-right">
-            <div className="text-white/70 text-sm mb-1">Current Time</div>
-            <div className="text-2xl font-semibold text-white">
+          <div className="text-left sm:text-right">
+            <div className="text-white/70 text-xs sm:text-sm mb-1">Current Time</div>
+            <div className="text-xl sm:text-2xl font-semibold text-white">
               {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
             </div>
           </div>
@@ -158,18 +158,18 @@ export default function StudentDashboard() {
 
       {/* Attendance Check-in Section */}
       <div className="card-colorful mb-8 text-center">
-        <h3 className="text-2xl font-semibold mb-6 text-gray-800 flex items-center justify-center gap-3" data-testid="text-checkin-title">
-          <div className="w-12 h-12 bg-gradient-info rounded-full flex items-center justify-center">
-            <i className="fas fa-bluetooth-b text-white text-lg"></i>
+        <h3 className="text-xl sm:text-2xl font-semibold mb-6 text-gray-800 flex items-center justify-center gap-3" data-testid="text-checkin-title">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-info rounded-full flex items-center justify-center">
+            <i className="fas fa-bluetooth-b text-white text-base sm:text-lg"></i>
           </div>
           Attendance Check-in
         </h3>
-        <p className="text-gray-600 mb-8">Click the button below to mark your attendance via BLE proximity detection.</p>
+        <p className="text-gray-600 mb-8 text-sm sm:text-base">Click the button below to mark your attendance via BLE proximity detection.</p>
         
         <button 
           onClick={handleBleCheck}
           disabled={isBleScanning}
-          className={`btn text-lg px-12 py-4 mb-6 ${isBleScanning ? 'btn-secondary' : 'btn-primary'}`}
+          className={`btn text-base sm:text-lg px-8 sm:px-12 py-3 sm:py-4 mb-6 w-full sm:w-auto ${isBleScanning ? 'btn-secondary' : 'btn-primary'}`}
           data-testid="button-check-ble"
         >
           <i className={`fas ${isBleScanning ? 'fa-spinner fa-spin' : 'fa-check'}`}></i>
@@ -188,24 +188,24 @@ export default function StudentDashboard() {
 
       {/* Attendance Chart Section */}
       <div className="card-colorful mb-8">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-semibold text-gray-800">{chartData.title}</h3>
-          <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">{chartData.title}</h3>
+          <div className="flex gap-2 justify-center sm:justify-end">
             <button 
               onClick={() => setChartPeriod('week')}
-              className={`btn text-sm py-2 px-4 ${chartPeriod === 'week' ? 'bg-gradient-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`btn text-xs sm:text-sm py-2 px-3 sm:px-4 ${chartPeriod === 'week' ? 'bg-gradient-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             >
               Week
             </button>
             <button 
               onClick={() => setChartPeriod('month')}
-              className={`btn text-sm py-2 px-4 ${chartPeriod === 'month' ? 'bg-gradient-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`btn text-xs sm:text-sm py-2 px-3 sm:px-4 ${chartPeriod === 'month' ? 'bg-gradient-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             >
               Month
             </button>
             <button 
               onClick={() => setChartPeriod('year')}
-              className={`btn text-sm py-2 px-4 ${chartPeriod === 'year' ? 'bg-gradient-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`btn text-xs sm:text-sm py-2 px-3 sm:px-4 ${chartPeriod === 'year' ? 'bg-gradient-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             >
               Year
             </button>
@@ -240,17 +240,17 @@ export default function StudentDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Reliability Score */}
         <div className="card-colorful">
-          <h3 className="text-xl font-semibold mb-6 flex items-center gap-3 text-gray-800" data-testid="text-reliability-title">
+          <h3 className="text-lg sm:text-xl font-semibold mb-6 flex items-center gap-3 text-gray-800" data-testid="text-reliability-title">
             <div className="w-10 h-10 bg-gradient-warning rounded-full flex items-center justify-center">
-              <i className="fas fa-chart-pie text-white"></i>
+              <i className="fas fa-chart-pie text-white text-sm sm:text-base"></i>
             </div>
             Reliability Score
           </h3>
           <div className="text-center mb-6">
-            <div className="text-5xl font-light mb-2" data-testid="text-overall-score">
+            <div className="text-4xl sm:text-5xl font-light mb-2" data-testid="text-overall-score">
               <span className="text-gradient">87%</span>
             </div>
-            <p className="text-gray-600">Overall Attendance Rate</p>
+            <p className="text-gray-600 text-sm sm:text-base">Overall Attendance Rate</p>
           </div>
           <div className="space-y-4">
             <div>
@@ -276,9 +276,9 @@ export default function StudentDashboard() {
 
         {/* Achievement Badges */}
         <div className="card-colorful">
-          <h3 className="text-xl font-semibold mb-6 flex items-center gap-3 text-gray-800" data-testid="text-badges-title">
+          <h3 className="text-lg sm:text-xl font-semibold mb-6 flex items-center gap-3 text-gray-800" data-testid="text-badges-title">
             <div className="w-10 h-10 bg-gradient-warning rounded-full flex items-center justify-center">
-              <i className="fas fa-trophy text-white"></i>
+              <i className="fas fa-trophy text-white text-sm sm:text-base"></i>
             </div>
             Achievement Badges
           </h3>

@@ -99,14 +99,14 @@ export default function TeacherDashboard() {
         <div className="container-colorful py-8">
           {/* Welcome Header */}
           <div className="welcome-header">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-4xl font-light mb-2">Good morning, Professor Sharma</h1>
-                <p className="text-white/80 text-lg">Ready to start today's attendance session?</p>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light mb-2">Good morning, Professor Sharma</h1>
+                <p className="text-white/80 text-sm sm:text-base lg:text-lg">Ready to start today's attendance session?</p>
               </div>
-              <div className="text-right">
-                <div className="text-white/70 text-sm mb-1">Current Time</div>
-                <div className="text-2xl font-semibold text-white" data-testid="text-current-time">
+              <div className="text-left sm:text-right">
+                <div className="text-white/70 text-xs sm:text-sm mb-1">Current Time</div>
+                <div className="text-xl sm:text-2xl font-semibold text-white" data-testid="text-current-time">
                   {currentTime.toLocaleTimeString('en-US', { 
                     hour: '2-digit', 
                     minute: '2-digit', 
@@ -144,12 +144,12 @@ export default function TeacherDashboard() {
 
           {/* Main Action Area */}
           <div className="card-colorful text-center mb-8">
-            <h3 className="text-2xl font-semibold mb-4 text-gray-800" data-testid="text-session-control-title">Attendance Session Control</h3>
-            <p className="text-gray-600 mb-8" data-testid="text-session-instruction">Click the button below to start an attendance session for your current class.</p>
+            <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-800" data-testid="text-session-control-title">Attendance Session Control</h3>
+            <p className="text-gray-600 mb-8 text-sm sm:text-base" data-testid="text-session-instruction">Click the button below to start an attendance session for your current class.</p>
             
             <button 
               onClick={handleAttendanceToggle}
-              className={`btn text-lg px-12 py-4 mb-6 ${attendanceSessionActive ? 'btn-secondary' : 'btn-primary'}`}
+              className={`btn text-base sm:text-lg px-8 sm:px-12 py-3 sm:py-4 mb-6 w-full sm:w-auto ${attendanceSessionActive ? 'btn-secondary' : 'btn-primary'}`}
               data-testid="button-attendance-session"
             >
               <i className={`fas ${attendanceSessionActive ? 'fa-stop' : 'fa-play'}`}></i>
@@ -187,9 +187,9 @@ export default function TeacherDashboard() {
 
           {/* Recent Sessions */}
           <div className="card-colorful">
-            <h3 className="text-xl font-semibold mb-6 flex items-center gap-3 text-gray-800" data-testid="text-recent-sessions-title">
+            <h3 className="text-lg sm:text-xl font-semibold mb-6 flex items-center gap-3 text-gray-800" data-testid="text-recent-sessions-title">
               <div className="w-10 h-10 bg-gradient-warning rounded-full flex items-center justify-center">
-                <i className="fas fa-history text-white"></i>
+                <i className="fas fa-history text-white text-sm sm:text-base"></i>
               </div>
               Recent Sessions
             </h3>

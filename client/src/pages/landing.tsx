@@ -11,10 +11,10 @@ export default function LandingPage() {
           <div className="w-24 h-24 mx-auto bg-gradient-primary rounded-2xl flex items-center justify-center mb-6 shadow-lg">
             <i className="fas fa-user-check text-3xl text-white"></i>
           </div>
-          <h1 className="text-5xl font-bold text-gradient mb-4" data-testid="title-main">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-4" data-testid="title-main">
             Smart Attendance System
           </h1>
-          <p className="text-xl text-muted-foreground mb-12 max-w-lg mx-auto" data-testid="text-tagline">
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-12 max-w-lg mx-auto" data-testid="text-tagline">
             Revolutionizing attendance tracking with smart technology, biometric verification, and gamified engagement for modern educational institutions.
           </p>
         </div>
@@ -45,15 +45,15 @@ export default function LandingPage() {
         </div>
 
         {/* Login Buttons */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
           <Link href="/teacher">
-            <button className="btn btn-primary text-xl px-12 py-5 shadow-2xl" data-testid="button-teacher-login">
+            <button className="btn btn-primary text-base sm:text-lg lg:text-xl px-8 sm:px-12 py-4 sm:py-5 shadow-2xl w-full sm:w-auto" data-testid="button-teacher-login">
               <i className="fas fa-chalkboard-teacher"></i>
               Teacher Login
             </button>
           </Link>
           <Link href="/student">
-            <button className="btn bg-gradient-success text-white text-xl px-12 py-5 shadow-2xl" data-testid="button-student-login">
+            <button className="btn bg-gradient-success text-white text-base sm:text-lg lg:text-xl px-8 sm:px-12 py-4 sm:py-5 shadow-2xl w-full sm:w-auto" data-testid="button-student-login">
               <i className="fas fa-user-graduate"></i>
               Student Login
             </button>
@@ -61,17 +61,17 @@ export default function LandingPage() {
         </div>
 
         {/* Additional info */}
-        <div className="mt-16">
-          <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-full px-8 py-4 border border-white/20">
+        <div className="mt-12 sm:mt-16">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 bg-white/10 backdrop-blur-sm rounded-full px-6 sm:px-8 py-3 sm:py-4 border border-white/20">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-success rounded-full flex items-center justify-center">
-                <i className="fas fa-check text-white text-sm"></i>
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-success rounded-full flex items-center justify-center">
+                <i className="fas fa-check text-white text-xs sm:text-sm"></i>
               </div>
-              <span className="text-white font-medium">Trusted by</span>
+              <span className="text-white font-medium text-sm sm:text-base">Trusted by</span>
             </div>
-            <div className="text-white">
-              <span className="font-bold text-2xl text-gradient" data-testid="text-institutions-count">500+</span>
-              <span className="ml-2 text-white/80">institutions worldwide</span>
+            <div className="text-white text-center sm:text-left">
+              <span className="font-bold text-xl sm:text-2xl text-gradient" data-testid="text-institutions-count">500+</span>
+              <span className="ml-2 text-white/80 text-sm sm:text-base">institutions worldwide</span>
             </div>
           </div>
         </div>
