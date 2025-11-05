@@ -2,6 +2,8 @@ const CACHE_NAME = 'smart-attendance-v1';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/index.css',
+  '/main.tsx',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png'
