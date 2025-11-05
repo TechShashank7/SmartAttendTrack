@@ -1,0 +1,906 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["Inter", "system-ui", "sans-serif"],
+                }
+            },
+        }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: hsl(220 14% 96%);
+            --foreground: hsl(220 9% 9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(220 9% 9%);
+            --primary: hsl(221 83% 53%);
+            --primary-foreground: hsl(0 0% 98%);
+            --secondary: hsl(158 64% 52%);
+            --secondary-foreground: hsl(0 0% 98%);
+            --muted: hsl(220 14% 96%);
+            --muted-foreground: hsl(220 9% 46%);
+            --accent: hsl(262 83% 58%);
+            --accent-foreground: hsl(0 0% 98%);
+            --destructive: hsl(0 84% 60%);
+            --destructive-foreground: hsl(0 0% 98%);
+            --border: hsl(220 13% 91%);
+            --ring: hsl(221 83% 53%);
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: hsl(224 71% 4%);
+            --foreground: hsl(213 31% 91%);
+            --card: hsl(224 71% 4%);
+            --card-foreground: hsl(213 31% 91%);
+            --primary: hsl(221 83% 53%);
+            --primary-foreground: hsl(0 0% 98%);
+            --secondary: hsl(158 64% 52%);
+            --secondary-foreground: hsl(0 0% 98%);
+            --muted: hsl(215 28% 17%);
+            --muted-foreground: hsl(217 11% 65%);
+            --accent: hsl(262 83% 58%);
+            --accent-foreground: hsl(0 0% 98%);
+            --destructive: hsl(0 63% 31%);
+            --destructive-foreground: hsl(0 0% 98%);
+            --border: hsl(215 28% 17%);
+            --ring: hsl(221 83% 53%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
+            height: 8px;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: var(--accent-foreground);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .fingerprint-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            margin: 16px 0;
+        }
+
+        .nav-bar {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s ease;
+        }
+
+        .leaderboard-item:hover {
+            background: var(--muted);
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            font-weight: 600;
+            color: var(--accent);
+            min-width: 30px;
+        }
+
+        .attendance-status {
+            padding: 16px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: var(--secondary-foreground);
+            text-align: center;
+            font-weight: 500;
+            margin: 16px 0;
+            display: none;
+        }
+
+        .attendance-status.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .stat-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing" class="page active">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <!-- Modern gradient background with subtle pattern -->
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50"></div>
+            
+            <div class="relative z-10 text-center max-w-2xl mx-auto">
+                <!-- System Logo/Icon -->
+                <div class="mb-8">
+                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                        <i class="fas fa-user-check text-3xl text-white"></i>
+                    </div>
+                    <h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                        Smart Attendance System
+                    </h1>
+                    <p class="text-xl text-muted-foreground mb-12 max-w-lg mx-auto">
+                        Revolutionizing attendance tracking with smart technology, biometric verification, and gamified engagement for modern educational institutions.
+                    </p>
+                </div>
+
+                <!-- Feature highlights -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-bluetooth-b text-2xl text-blue-500 mb-3"></i>
+                        <h3 class="font-semibold mb-2">BLE Technology</h3>
+                        <p class="text-sm text-muted-foreground">Proximity-based attendance tracking</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <i class="fas fa-fingerprint text-2xl text-purple-500 mb-3"></i>
+                        <h3 class="font-semibold mb-2">Biometric Security</h3>
+                        <p class="text-sm text-muted-foreground">Secure identity verification</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <i class="fas fa-trophy text-2xl text-yellow-500 mb-3"></i>
+                        <h3 class="font-semibold mb-2">Gamification</h3>
+                        <p class="text-sm text-muted-foreground">Engaging reward system</p>
+                    </div>
+                </div>
+
+                <!-- Login Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="showPage('teacher')" class="btn btn-primary text-lg px-8 py-4">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        Teacher Login
+                    </button>
+                    <button onclick="showPage('student')" class="btn btn-secondary text-lg px-8 py-4">
+                        <i class="fas fa-user-graduate"></i>
+                        Student Login
+                    </button>
+                </div>
+
+                <!-- Additional info -->
+                <div class="mt-12 text-sm text-muted-foreground">
+                    <p>Trusted by <span class="font-semibold text-foreground">500+</span> institutions worldwide</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Page -->
+    <div id="teacher" class="page">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="container mx-auto px-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-user-check text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">Teacher Dashboard</h2>
+                </div>
+                <button onclick="showPage('landing')" class="btn bg-muted text-muted-foreground">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </button>
+            </div>
+        </nav>
+
+        <div class="container mx-auto px-4 py-8">
+            <!-- Welcome Section -->
+            <div class="stat-card mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2">Welcome back, Professor Smith</h3>
+                        <p class="text-muted-foreground">Ready to start today's attendance session?</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-muted-foreground">Current Time</div>
+                        <div id="current-time" class="text-lg font-semibold"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Today's Classes</p>
+                            <p class="text-2xl font-bold">3</p>
+                        </div>
+                        <i class="fas fa-calendar-day text-2xl text-blue-500"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Total Students</p>
+                            <p class="text-2xl font-bold">45</p>
+                        </div>
+                        <i class="fas fa-users text-2xl text-green-500"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Avg Attendance</p>
+                            <p class="text-2xl font-bold">87%</p>
+                        </div>
+                        <i class="fas fa-chart-line text-2xl text-purple-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Action Area -->
+            <div class="stat-card text-center">
+                <h3 class="text-xl font-semibold mb-4">Attendance Session Control</h3>
+                <p class="text-muted-foreground mb-8">Click the button below to start an attendance session for your current class.</p>
+                
+                <button id="startAttendanceBtn" onclick="startAttendance()" class="btn btn-primary text-lg px-12 py-4 mb-6">
+                    <i class="fas fa-play"></i>
+                    Start Attendance Session
+                </button>
+
+                <div id="attendanceStatus" class="attendance-status">
+                    <div class="flex items-center justify-center gap-3">
+                        <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                        <span>Attendance session is running... Students can now check in via BLE proximity.</span>
+                    </div>
+                </div>
+
+                <!-- Session Info -->
+                <div id="sessionInfo" class="mt-6 text-sm text-muted-foreground" style="display: none;">
+                    <p>Session started at: <span id="sessionStartTime"></span></p>
+                    <p>Students checked in: <span id="checkedInCount">0</span></p>
+                </div>
+            </div>
+
+            <!-- Recent Sessions -->
+            <div class="stat-card mt-8">
+                <h3 class="text-lg font-semibold mb-4">Recent Sessions</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div>
+                            <p class="font-medium">Computer Science 101</p>
+                            <p class="text-sm text-muted-foreground">Today, 9:00 AM</p>
+                        </div>
+                        <span class="badge">42/45 Present</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div>
+                            <p class="font-medium">Data Structures</p>
+                            <p class="text-sm text-muted-foreground">Yesterday, 2:00 PM</p>
+                        </div>
+                        <span class="badge">38/40 Present</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Page -->
+    <div id="student" class="page">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="container mx-auto px-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-user-check text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">Student Dashboard</h2>
+                </div>
+                <button onclick="showPage('landing')" class="btn bg-muted text-muted-foreground">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </button>
+            </div>
+        </nav>
+
+        <div class="container mx-auto px-4 py-8">
+            <!-- Welcome Section -->
+            <div class="stat-card mb-8">
+                <div class="flex items-center space-x-4">
+                    <!-- Student avatar -->
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold">Welcome, Alex Johnson</h3>
+                        <p class="text-muted-foreground">Computer Science Major • ID: CS2024001</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLE Check-in Section -->
+            <div class="stat-card mb-8">
+                <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-bluetooth-b text-blue-500"></i>
+                    Attendance Check-in
+                </h3>
+                <p class="text-muted-foreground mb-6">Check if you're within range of the classroom BLE beacon to mark your attendance.</p>
+                
+                <button id="checkBleBtn" onclick="checkBLERange()" class="btn btn-primary mb-4">
+                    <i class="fas fa-search"></i>
+                    Check BLE Range
+                </button>
+
+                <div id="attendanceMarked" class="attendance-status">
+                    <div class="flex items-center justify-center gap-3">
+                        <i class="fas fa-check-circle text-2xl"></i>
+                        <span>Attendance Marked Successfully!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gamification Panel -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Reliability Score -->
+                <div class="stat-card">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-purple-500"></i>
+                        Reliability Score
+                    </h3>
+                    <div class="text-center mb-6">
+                        <div class="text-4xl font-bold text-purple-600 mb-2">87%</div>
+                        <p class="text-sm text-muted-foreground">Overall Attendance Rate</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>This Month</span>
+                                <span>87%</span>
+                            </div>
+                            <div class="w-full bg-border rounded-full h-2">
+                                <div class="progress-bar w-[87%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Last Month</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="w-full bg-border rounded-full h-2">
+                                <div class="progress-bar w-[92%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Achievement Badges -->
+                <div class="stat-card">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-trophy text-yellow-500"></i>
+                        Achievement Badges
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="text-center p-3 bg-muted rounded-lg">
+                            <i class="fas fa-fire text-2xl text-red-500 mb-2"></i>
+                            <div class="font-semibold text-sm">5-Day Streak</div>
+                            <div class="text-xs text-muted-foreground">Perfect Attendance</div>
+                        </div>
+                        <div class="text-center p-3 bg-muted rounded-lg">
+                            <i class="fas fa-clock text-2xl text-blue-500 mb-2"></i>
+                            <div class="font-semibold text-sm">Punctuality Pro</div>
+                            <div class="text-xs text-muted-foreground">Always On Time</div>
+                        </div>
+                        <div class="text-center p-3 bg-muted rounded-lg">
+                            <i class="fas fa-calendar-check text-2xl text-green-500 mb-2"></i>
+                            <div class="font-semibold text-sm">Consistency King</div>
+                            <div class="text-xs text-muted-foreground">30 Days Active</div>
+                        </div>
+                        <div class="text-center p-3 bg-muted rounded-lg opacity-50">
+                            <i class="fas fa-star text-2xl text-gray-400 mb-2"></i>
+                            <div class="font-semibold text-sm">Perfectionist</div>
+                            <div class="text-xs text-muted-foreground">100% for Month</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="stat-card mt-8">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-medal text-yellow-500"></i>
+                    Class Leaderboard
+                </h3>
+                <div class="space-y-0">
+                    <div class="leaderboard-item bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg mb-2">
+                        <div class="flex items-center gap-3">
+                            <div class="rank">🥇</div>
+                            <div>
+                                <div class="font-semibold">Sarah Chen</div>
+                                <div class="text-sm text-muted-foreground">Computer Science</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-yellow-600">98%</div>
+                            <div class="text-xs text-muted-foreground">Attendance</div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-lg mb-2">
+                        <div class="flex items-center gap-3">
+                            <div class="rank">🥈</div>
+                            <div>
+                                <div class="font-semibold">Mike Rodriguez</div>
+                                <div class="text-sm text-muted-foreground">Computer Science</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-gray-600">95%</div>
+                            <div class="text-xs text-muted-foreground">Attendance</div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-lg mb-2">
+                        <div class="flex items-center gap-3">
+                            <div class="rank">🥉</div>
+                            <div>
+                                <div class="font-semibold">Emma Thompson</div>
+                                <div class="text-sm text-muted-foreground">Computer Science</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-amber-600">92%</div>
+                            <div class="text-xs text-muted-foreground">Attendance</div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="rank text-blue-600 font-bold">4</div>
+                            <div>
+                                <div class="font-semibold text-blue-600">Alex Johnson (You)</div>
+                                <div class="text-sm text-muted-foreground">Computer Science</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-blue-600">87%</div>
+                            <div class="text-xs text-muted-foreground">Attendance</div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="flex items-center gap-3">
+                            <div class="rank">5</div>
+                            <div>
+                                <div class="font-semibold">James Wilson</div>
+                                <div class="text-sm text-muted-foreground">Computer Science</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold">84%</div>
+                            <div class="text-xs text-muted-foreground">Attendance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                <div class="stat-card text-center">
+                    <i class="fas fa-calendar-week text-2xl text-blue-500 mb-2"></i>
+                    <div class="font-bold text-xl">12</div>
+                    <div class="text-sm text-muted-foreground">Classes This Week</div>
+                </div>
+                <div class="stat-card text-center">
+                    <i class="fas fa-check-circle text-2xl text-green-500 mb-2"></i>
+                    <div class="font-bold text-xl">11</div>
+                    <div class="text-sm text-muted-foreground">Attended</div>
+                </div>
+                <div class="stat-card text-center">
+                    <i class="fas fa-clock text-2xl text-purple-500 mb-2"></i>
+                    <div class="font-bold text-xl">8:45</div>
+                    <div class="text-sm text-muted-foreground">Avg Check-in Time</div>
+                </div>
+                <div class="stat-card text-center">
+                    <i class="fas fa-award text-2xl text-yellow-500 mb-2"></i>
+                    <div class="font-bold text-xl">4</div>
+                    <div class="text-sm text-muted-foreground">Badges Earned</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biometric Verification Modal -->
+    <div id="biometricModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-4">Biometric Verification Required</h3>
+            <p class="text-muted-foreground mb-6">Please verify your identity to mark attendance</p>
+            
+            <div class="fingerprint-icon">
+                <i class="fas fa-fingerprint"></i>
+            </div>
+            
+            <p class="text-sm text-muted-foreground mb-6">Place your finger on the sensor or look at the camera</p>
+            
+            <div class="flex gap-3 justify-center">
+                <button onclick="verifyBiometric()" class="btn btn-primary">
+                    <i class="fas fa-check"></i>
+                    Verify Identity
+                </button>
+                <button onclick="closeBiometricModal()" class="btn bg-muted text-muted-foreground">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let currentPage = 'landing';
+        let attendanceSessionActive = false;
+        
+        // Page navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageName).classList.add('active');
+            currentPage = pageName;
+            
+            // Initialize page-specific functionality
+            if (pageName === 'teacher') {
+                updateCurrentTime();
+                setInterval(updateCurrentTime, 1000);
+            }
+        }
+        
+        // Teacher functionality
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+        
+        function startAttendance() {
+            const btn = document.getElementById('startAttendanceBtn');
+            const status = document.getElementById('attendanceStatus');
+            const sessionInfo = document.getElementById('sessionInfo');
+            const sessionStartTime = document.getElementById('sessionStartTime');
+            
+            if (!attendanceSessionActive) {
+                // Start session
+                attendanceSessionActive = true;
+                btn.innerHTML = '<i class="fas fa-stop"></i> Stop Attendance Session';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                status.classList.add('active');
+                sessionInfo.style.display = 'block';
+                
+                const now = new Date();
+                sessionStartTime.textContent = now.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                // Simulate students checking in
+                simulateCheckIns();
+            } else {
+                // Stop session
+                attendanceSessionActive = false;
+                btn.innerHTML = '<i class="fas fa-play"></i> Start Attendance Session';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                status.classList.remove('active');
+                sessionInfo.style.display = 'none';
+            }
+        }
+        
+        function simulateCheckIns() {
+            let count = 0;
+            const interval = setInterval(() => {
+                if (!attendanceSessionActive) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                count += Math.floor(Math.random() * 3) + 1;
+                const checkedInElement = document.getElementById('checkedInCount');
+                if (checkedInElement) {
+                    checkedInElement.textContent = Math.min(count, 45);
+                }
+                
+                if (count >= 45) {
+                    clearInterval(interval);
+                }
+            }, 3000);
+        }
+        
+        // Student functionality
+        function checkBLERange() {
+            const btn = document.getElementById('checkBleBtn');
+            
+            // Simulate BLE scanning
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning for BLE beacon...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate finding BLE beacon
+                btn.innerHTML = '<i class="fas fa-bluetooth-b"></i> BLE Beacon Found!';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                
+                setTimeout(() => {
+                    // Show biometric verification modal
+                    document.getElementById('biometricModal').classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-search"></i> Check BLE Range';
+                    btn.classList.remove('btn-secondary');
+                    btn.classList.add('btn-primary');
+                    btn.disabled = false;
+                }, 1000);
+            }, 2000);
+        }
+        
+        function verifyBiometric() {
+            const modal = document.getElementById('biometricModal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Show verification in progress
+            modalContent.innerHTML = `
+                <h3 class="text-xl font-semibold mb-4">Verifying...</h3>
+                <div class="fingerprint-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <p class="text-sm text-muted-foreground">Processing biometric data...</p>
+            `;
+            
+            setTimeout(() => {
+                // Show success
+                modalContent.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-4 text-green-600">Verification Successful!</h3>
+                    <div class="fingerprint-icon">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                    </div>
+                    <p class="text-sm text-muted-foreground mb-6">Identity confirmed. Marking attendance...</p>
+                `;
+                
+                setTimeout(() => {
+                    closeBiometricModal();
+                    showAttendanceMarked();
+                }, 1500);
+            }, 2000);
+        }
+        
+        function closeBiometricModal() {
+            document.getElementById('biometricModal').classList.remove('active');
+            
+            // Reset modal content
+            document.getElementById('biometricModal').querySelector('.modal-content').innerHTML = `
+                <h3 class="text-xl font-semibold mb-4">Biometric Verification Required</h3>
+                <p class="text-muted-foreground mb-6">Please verify your identity to mark attendance</p>
+                
+                <div class="fingerprint-icon">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                
+                <p class="text-sm text-muted-foreground mb-6">Place your finger on the sensor or look at the camera</p>
+                
+                <div class="flex gap-3 justify-center">
+                    <button onclick="verifyBiometric()" class="btn btn-primary">
+                        <i class="fas fa-check"></i>
+                        Verify Identity
+                    </button>
+                    <button onclick="closeBiometricModal()" class="btn bg-muted text-muted-foreground">
+                        Cancel
+                    </button>
+                </div>
+            `;
+        }
+        
+        function showAttendanceMarked() {
+            const status = document.getElementById('attendanceMarked');
+            status.classList.add('active');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                status.classList.remove('active');
+            }, 5000);
+        }
+        
+        // Initialize the application
+        (function() {
+            // Set initial page
+            showPage('landing');
+            
+            // Add some interactive effects
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add hover effects to stat cards
+                document.querySelectorAll('.stat-card').forEach(card => {
+                    card.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateY(-2px)';
+                    });
+                    
+                    card.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateY(0)';
+                    });
+                });
+            });
+        })();
+        
+        // Close modal when clicking outside
+        document.getElementById('biometricModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBiometricModal();
+            }
+        });
+        
+        // TODO: Implement real BLE scanning functionality
+        // TODO: Integrate with actual biometric verification systems
+        // TODO: Connect to backend APIs for attendance data
+        // TODO: Add real-time synchronization between teacher and student views
+        // TODO: Implement push notifications for attendance reminders
+    </script>
+</body>
+</html>
