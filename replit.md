@@ -35,10 +35,16 @@ The system uses PostgreSQL as the primary database with Drizzle ORM for type-saf
 Database configuration uses environment-based connection strings for deployment flexibility.
 
 ## Authentication & Security
-Currently implements a basic user authentication system with:
-- Username/password authentication
-- Session-based authentication (prepared for connect-pg-simple session store)
-- Biometric verification simulation for attendance confirmation
+The system implements email-based authentication with role-based access control:
+- **Email-based login**: Users log in with their institutional email (@kiet.edu)
+- **Role-based routing**: Automatically routes users to appropriate dashboards based on email
+  - Teacher emails (teacher1-3@kiet.edu) → Teacher Dashboard
+  - Student emails (e.g., shashank.2428cseai17@kiet.edu) → Student Dashboard
+- **Client-side session management**: Uses React Context API and sessionStorage for session persistence
+- **Route protection**: ProtectedRoute component guards teacher and student dashboards
+- **Authorization config**: Centralized email whitelist in `client/src/config/authorizedEmails.ts`
+
+**Note**: Current implementation uses client-side authentication suitable for demos and internal prototypes. For production deployment with external access, server-side authentication and session validation should be implemented.
 
 ## Development & Build System
 The project uses a modern development stack optimized for developer experience:
