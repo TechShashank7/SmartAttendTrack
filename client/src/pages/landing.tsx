@@ -122,16 +122,6 @@ export default function LandingPage() {
         {/* Additional info */}
         <div className="mt-12 sm:mt-16">
           <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 bg-white/10 backdrop-blur-sm rounded-full px-6 sm:px-8 py-3 sm:py-4 border border-white/20">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-success rounded-full flex items-center justify-center">
-                <i className="fas fa-check text-white text-xs sm:text-sm"></i>
-              </div>
-              <span className="text-white font-medium text-sm sm:text-base">Trusted by</span>
-            </div>
-            <div className="text-white text-center sm:text-left">
-              <span className="font-bold text-xl sm:text-2xl text-gradient" data-testid="text-institutions-count">500+</span>
-              <span className="ml-2 text-white/80 text-sm sm:text-base">institutions worldwide</span>
-            </div>
           </div>
         </div>
       </div>
