@@ -5,7 +5,8 @@ export const authorizedEmails = {
     "teacher3@kiet.edu"
   ],
   students: [
-    "shashank.2428cseai17@kiet.edu"
+    "shashank.2428cseai17@kiet.edu",
+    "yogesh.2428cseai877@kiet.edu"
   ]
 };
 
