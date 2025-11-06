@@ -6,10 +6,6 @@ export const authorizedEmails = {
   ],
   students: [
     "shashank.2428cseai17@kiet.edu"
-    "swayam.2428cseai1154@kiet.edu",
-    "yogesh.2428cseai877@kiet.edu",
-    "shobhit.2428cseai123@kiet.edu",
-    "utkarsh.2428cseai146@kiet.edu",
   ]
 };
 
